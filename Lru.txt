@@ -1,0 +1,59 @@
+ #include <iostream>
+ #include <list>
+ #include <unordered_map>
+ using namespace std;
+ 
+int main()
+ {
+    int n, capacity;
+    cout << "Enter number of pages: ";
+    cin >> n;
+ 
+    int arr[n];
+    cout << "Enter the page reference string: ";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+ 
+    cout << "Enter frame capacity: ";
+    cin >> capacity;
+ 
+    list<int> dq; 
+    unordered_map<int, list<int>::iterator> pos; 
+ 
+    int page_faults = 0, page_hits = 0;
+ 
+    for (int i = 0; i < n; i++)
+    {
+        int page = arr[i];
+ 
+        
+        if (pos.find(page) == pos.end())
+        {
+            page_faults++;
+ 
+            if ((int)dq.size() == capacity)
+            {
+                
+                int lru = dq.front();
+                dq.pop_front();
+                pos.erase(lru);
+            }
+ 
+            dq.push_back(page);
+            pos[page] = --dq.end();
+        }
+        else
+        {
+          
+            page_hits++;
+            dq.erase(pos[page]);
+            dq.push_back(page);
+            pos[page] = --dq.end();
+        }
+    }
+ 
+    cout << "\nTotal Page Faults: " << page_faults << endl;
+    cout << "Total Page Hits: " << page_hits << endl;
+ 
+    return 0;
+ }
